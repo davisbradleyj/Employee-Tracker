@@ -18,7 +18,8 @@ connection.connect(function(err) {
 });
 
 function start() {
-    inquirer.prompt({
+    inquirer.prompt([
+    {
       name: "action",
       type: "rawlist",
       message: "What would you like to do?",
@@ -31,7 +32,7 @@ function start() {
       "Update employee role",
       "Exit"
       ]
-    })
+    }])
     .then(function(answer){
         switch (answer.action) {
             case "Add a department":
@@ -111,25 +112,26 @@ function viewEmployees() {
 // add department
 function addDepartment() {
     inquirer
-      .prompt({
+      .prompt([
+      {
         name: "dept",
         type: "input",
         message: "What department would you like to add?"
-      })
+      }])
       .then(function(answer) {
         console.log(answer)
         // var query = "INSERT INTO department (name) VALUES (?)";
         // connection.query(query, answer.dept, function(err,res){
         //     if (err) throw err
-        })
         start();
+        })
     // });
 }
 
 //add role
 function addRole() {
-    inquirer
-      .prompt({
+    inquirer.prompt([
+      {
         name: "title",
         type: "input",
         message: "What role would you like to add?"
@@ -143,14 +145,13 @@ function addRole() {
         name: "dept_id",
         type: "input",
         message: "What department is it part of?"
-      },
-      )
+      }])
       .then(function(answer) {
         console.log(answer)
         // var query = "INSERT INTO role (title,salary,dept_id) VALUES (?)";
         // connection.query(query, answer, function(err,res){
         //     if (err) throw err
-        })
         start();
+        })
     // });
 }
