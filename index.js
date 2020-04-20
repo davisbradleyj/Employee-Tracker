@@ -58,7 +58,7 @@ function dept() {
     choices: ["View Departments", 
     "Add a Department", 
     "Delete Departments",
-    "View Department Budget", 
+    "View Department Budgets", 
     "Return to Start Menu"
     ]
   }
@@ -77,7 +77,7 @@ function dept() {
             delDepartment();
             break;
           
-          case "View Departments Budget":
+          case "View Department Budgets":
             deptBudget();
             break;  
 
@@ -94,7 +94,7 @@ function roles() {
     name: "action",
     type: "rawlist",
     message: "What would you like to do?",
-    choices: ["View Roless", 
+    choices: ["View Roles", 
     "Add a Role", 
     "Delete Role", 
     "Return to Start Menu"
@@ -131,6 +131,7 @@ function employees() {
     choices: ["View Employees", 
     "Add an Employee", 
     "Delete an Employee",
+    "Update Employee Role",
     "Update Manager",
     "View Employees by Manager",
     "Return to Start Menu"
@@ -151,6 +152,10 @@ function employees() {
           delEmployee();
           break;
         
+        case "Update Employee Role":
+          updateEmployeeRole();
+          break; 
+
         case "Update Manager":
           updateManager();
           break;  
@@ -177,13 +182,13 @@ function viewDepartments() {
   connection.query(query, function(err,res) {
       if (err) throw err;
       console.table(res);
-      start(); 
   })
+  start();
 };
 // build view role, selecting all from role table
 // display using console.table dependency
 function viewRoles() {
-  var query = "SELECT * FROM role"
+  var query = "SELECT title, salary, department.name FROM role LEFT JOIN department ON role.dept_id = department.dept_id"
   connection.query(query, function(err,res) {
       if (err) throw err;
       console.table(res);
@@ -193,7 +198,7 @@ function viewRoles() {
 // build view employee, selecting all from employee table
 // display using console.table dependency
 function viewEmployees() {
-  var query = "SELECT * FROM employee"
+  var query = "SELECT first_name, last_name, department.name as department, role.title, role.salary FROM employee LEFT JOIN role on employee.role_id = role.role_id LEFT JOIN department on role.dept_id = department.dept_id"
   connection.query(query, function(err,res) {
       if (err) throw err;
       console.table(res);
@@ -232,76 +237,107 @@ function addRole() {
       message: "What is the salary for that role?"
     },
     {
-      name: "dept_id",
+      name: "dept",
       type: "input",
       message: "What department is it part of?"
     }])
     .then(function(answer) {
       console.log(answer)
-      // var query = "INSERT INTO role (title,salary,dept_id) VALUES (?)";
+      // var query = `INSERT INTO role (title,salary,dept_id) VALUES (?)`;
       // connection.query(query, answer, function(err,res){
       //     if (err) throw err
       viewRoles();
       })
   // });
 }
-//add employee, not writing as of 4-19-2020
+//add employee, writing as of 4-19-2020
 function addEmployee() {
   inquirer.prompt([
     {
-      name: "first_name",
+      name: "first",
       type: "input",
       message: "What is the first name?"
     },
     {
-      name: "last_name",
+      name: "last",
       type: "input",
       message: "What is the last name?"
     },
     {
-      name: "role_id",
+      name: "role",
       type: "input",
       message: "What is the role id?"
     },
     {
-      name: "manager_id",
+      name: "manager",
       type: "input",
       message: "Please enter the manager id, if applicable."
     }])
     .then(function(answer) {
       console.log(answer)
-      // var query = "SELECT * from employee (first_name,last_name,role_id,manager_id) VALUES (?)";
-      // connection.query(query, answer, function(err,res){
-      //     if (err) throw err
+      var query = `INSERT INTO employee (first_name,last_name,role_id,manager_id) VALUES ("${answer.first}","${answer.last}",${answer.role},${answer.manager})`;
+      connection.query(query, answer, function(err,res){
+          if (err) throw err
       viewEmployees();
-      })
-  // });
+      });
+  });
 }
-// update manager function, not writing as of 4-19-2020
+// update employee role function, writing as of 4-19-2020
+function updateEmployeeRole() {
+  inquirer.prompt([ 
+  {
+    name: "employee",
+    type: "input",
+    message: "What is the employee id number?"
+  },
+  {
+    name: "role",
+    type: "input",
+    message: "What is the new role id number?"
+  }])
+  .then(function(answer) {
+    console.log(answer)
+    var query = `UPDATE employee SET role_id = ${answer.role} WHERE emp_id = ${answer.employee}`;
+    connection.query(query, function(err,res){
+        if (err) throw err
+    updateManager();
+    viewEmployees();
+    });
+  });
+}
+// update manager function, writing as of 4-19-2020
 function updateManager() {
   inquirer.prompt([       
     {
-      name: "employee_id",
+      name: "employee",
       type: "input",
       message: "What is the employee id number?"
     },
     {
-      name: "manager_id",
+      name: "manager",
       type: "input",
       message: "What is the manager's employee id number?"
     }])
     .then(function(answer) {
       console.log(answer)
-      // var query = "INSERT INTO employee (first_name,last_name,role_id,manager_id) VALUES (?)";
-      // connection.query(query, answer, function(err,res){
-      //     if (err) throw err
+      var query = `INSERT INTO employee (employee_id,manager_id) VALUES (${answer.employee},${answer.manager})`;
+      connection.query(query, function(err,res){
+          if (err) throw err
       viewEmployees();
-  })
+    });
+  });
 }
 
 // Review Dept budget
 // console.table a join which displays totals for each depts salaries
-
+function deptBudget() {
+  var query = "SELECT deparment.name, role.salary FROM department INNER JOIN role ON department.dept_id === role.dept_id"
+  connection.query(query, function(err,res) {
+      if (err) throw err;
+      console.log(res);
+  })
+  start();
+};
 // View employees by Manager number
 // console.table a join which displays all employees under a certain manager number
 
