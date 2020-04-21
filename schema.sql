@@ -10,7 +10,7 @@ CREATE TABLE role (
 role_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 title VARCHAR(30) NOT NULL,
 salary DECIMAL(10,2) NOT NULL,
-department_id INT REFERENCES department(dept_id)
+dept_id INT REFERENCES department(dept_id)
 );
 CREATE TABLE employee (
 emp_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,

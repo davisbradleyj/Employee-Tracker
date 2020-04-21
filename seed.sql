@@ -61,9 +61,11 @@ VALUES ("Human Resources Manager",120000,6);
 INSERT INTO role (title, salary, dept_id)
 VALUES ("Chief Human Resources Officer",180000,6);
 INSERT INTO employee (first_name, last_name, role_id)
+VALUES ("No", "Manager",0);
+INSERT INTO employee (first_name, last_name, role_id)
 VALUES ("Everett", "Begum",2);
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Gaia", "Sellers",1,1);
+VALUES ("Gaia", "Sellers",1,2);
 INSERT INTO employee (first_name, last_name, role_id)
 VALUES ("Lisa-Marie", "Flowers",6);
 INSERT INTO employee (first_name, last_name, role_id)
@@ -75,8 +77,8 @@ VALUES ("Suraj", "Martins",16);
 INSERT INTO employee (first_name, last_name, role_id)
 VALUES ("Tyler", "Clayton",20);
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Lewie", "Everett",19,7);
+VALUES ("Lewie", "Everett",19,8);
 INSERT INTO employee (first_name, last_name, role_id)
 VALUES ("Jordana", "Munoz",24);
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Samad", "Welsh",23,9);
+VALUES ("Samad", "Welsh",23,10);
