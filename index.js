@@ -173,36 +173,39 @@ function exit() {
 }
 // build view department, selecting all from dept. table
 // display using console.table dependency
-function viewDepartments() {
+async function viewDepartments() {
   var query = "SELECT name as Department, dept_id as 'Dept ID' FROM department"
   connection.query(query, function (err, res) {
     if (err) throw err;
     console.log("\n")
     console.table(res);
+    setTimeout(start, 1000)
   })
-  start();
+
 };
 // build view role, selecting all from role table
 // display using console.table dependency
-function viewRoles() {
+async function viewRoles() {
   var query = "SELECT title as Title, role_id as 'Role #', salary as Salary, department.name as Department FROM role LEFT JOIN department ON role.dept_id = department.dept_id"
   connection.query(query, function (err, res) {
     if (err) throw err;
     console.log("\n")
     console.table(res);
+    setTimeout(start, 1000)
   })
-  start();
+
 };
 // build view employee, selecting all from employee table
 // display using console.table dependency
-function viewEmployees() {
-  var query = "SELECT first_name as First, last_name as Last, emp_id as 'ID #', department.name as Department, role.title as Title, role.salary as Salary FROM employee LEFT JOIN role on employee.role_id = role.role_id LEFT JOIN department on role.dept_id = department.dept_id"
+async function viewEmployees() {
+  var query = "SELECT emp_id as 'ID #', first_name as First, last_name as Last, department.name as Department, role.title as Title, role.salary as Salary FROM employee LEFT JOIN role on employee.role_id = role.role_id LEFT JOIN department on role.dept_id = department.dept_id"
   connection.query(query, function (err, res) {
     if (err) throw err;
     console.log("\n")
     console.table(res);
+    setTimeout(start, 1000)
   })
-  start();
+
 };
 // add department, writing as of 4-20-2020
 function addDepartment() {
@@ -301,7 +304,7 @@ function updateEmployeeRole() {
         if (err) throw err
       });
       console.log("\n" + "Please update the manager id" + "\n")
-      updateManager();      
+      updateManager();
     });
 }
 // update manager function, writing as of 4-20-2020
@@ -322,8 +325,8 @@ function updateManager() {
       console.log(answer)
       var query = `UPDATE employee SET manager_id = ${answer.manager} WHERE emp_id = ${answer.employee}`;
       connection.query(query, function (err, res) {
-        if (err) throw err 
-      }); 
+        if (err) throw err
+      });
       viewEmployees();
     });
 }
@@ -335,7 +338,7 @@ function deptBudget() {
     if (err) throw err;
     console.log("\n")
     console.table(res);
-    start();
+    setTimeout(start, 1000);
   })
 };
 
@@ -349,24 +352,24 @@ function managerEmployees() {
       message: "What is the manager's employee id number?"
     }])
     .then(function (answer) {
-      var query = `SELECT * FROM employee WHERE manager_id = ${answer.manager}`
+      var query = `SELECT emp_id as ID, first_name, last_name, role_id as Role, manager_id as 'Manager ID' FROM employee WHERE manager_id = ${answer.manager}`
       connection.query(query, function (err, res) {
         if (err) throw err;
         console.log("\n")
         console.table(res);
+        setTimeout(start, 1000);
       })
-      start();
     });
 }
 
 // Delete a Department, writing as of 4-20-2020
 function delDepartment() {
   inquirer.prompt([
-      {
-        name: "dept",
-        type: "input",
-        message: "What department would you like to delete?"
-      }])
+    {
+      name: "dept",
+      type: "input",
+      message: "What department would you like to delete?"
+    }])
     .then(function (answer) {
       console.log(answer.dept)
       var query = `DELETE FROM department WHERE name="${answer.dept}"`;
@@ -379,16 +382,16 @@ function delDepartment() {
 // Delete a Role, writing as of 4-20-2020
 function delRole() {
   inquirer.prompt([
-      {
-        name: "role",
-        type: "input",
-        message: "What role would you like to delete?"
-      }])
+    {
+      name: "role",
+      type: "input",
+      message: "What role would you like to delete?"
+    }])
     .then(function (answer) {
       console.log(answer.role)
       var query = `DELETE FROM role WHERE title="${answer.role}"`;
       connection.query(query, answer.dept, function (err, res) {
-        if (err) throw err        
+        if (err) throw err
       })
       viewRoles();
     });
@@ -396,16 +399,16 @@ function delRole() {
 // Delete an Employee, writing as of 4-20-2020
 function delEmployee() {
   inquirer.prompt([
-      {
-        name: "employee",
-        type: "input",
-        message: "Please enter the id for the employee you want to remove?"
-      }])
+    {
+      name: "employee",
+      type: "input",
+      message: "Please enter the id for the employee you want to remove?"
+    }])
     .then(function (answer) {
       console.log(answer.employee)
       var query = `DELETE FROM employee WHERE emp_id="${answer.employee}"`;
       connection.query(query, answer.dept, function (err, res) {
-        if (err) throw err        
+        if (err) throw err
       })
       viewEmployees();
     });
